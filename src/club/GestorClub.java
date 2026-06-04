@@ -10,11 +10,13 @@ public class GestorClub {
 
     public void controlFlujo() throws PresupuestoExcedidoException {
         Scanner sc = new Scanner(System.in);
+        boolean salida = true;
         int opcion;
         double salarioTotal = 0;
-        while (true) {
-            boolean salida=true;
+        while (salida) {
+            salida = true;
             menu();
+            System.out.println("escoge una opcion");
             opcion = sc.nextInt();
             switch (opcion) {
                 case 1:
@@ -26,20 +28,20 @@ public class GestorClub {
                         double salario = sc.nextDouble();
                         System.out.println("Di Posicion Jugador (PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO)");
                         String posicion = sc.next();
-                        trabajadores.add(new Jugador(nombre,salario,Posicion.valueOf(posicion.toUpperCase())));
-                        salarioTotal+=salario;
-                        if(salarioTotal>PRESUPUESTO_MAXIMO) {
+                        trabajadores.add(new Jugador(nombre, salario, Posicion.valueOf(posicion.toUpperCase())));
+                        salarioTotal += salario;
+                        if (salarioTotal > PRESUPUESTO_MAXIMO) {
                             throw new PresupuestoExcedidoException("presupuesto Excedido");
                         }
 
-                            System.out.println("Quieres crear otro jugador? S/N");
-                            String salir = sc.next();
-                            if (salir.equals("N") || salir.equals("n")) {
-                                salida = false;
-                            }
+                        System.out.println("Quieres crear otro jugador? S/N");
+                        String salir = sc.next();
+                        if (salir.equals("N") || salir.equals("n")) {
+                            salida = false;
+                        }
 
 
-                        }while(salida);
+                    } while (salida);
                     break;
                 case 2:
                     do {
@@ -62,20 +64,20 @@ public class GestorClub {
                             salida = false;
                         }
 
-                    }while (salida);
+                    } while (salida);
                     break;
-                case  3:
+                case 3:
                     do {
                         System.out.println("A quien quieres despedir");
                         String nombre = sc.next();
-                        for (Profesional p:trabajadores){
+                        for (Profesional p : trabajadores) {
 
-                        if (!p.getNombre().equals(nombre)) {
-                            throw new ProfesionalNoEncontradoException("Profesional no encontrado");
-                        }else {
-                            trabajadores.remove(p);
-                            salarioTotal -= p.getSalarioBase();
-                        }
+                            if (!p.getNombre().equals(nombre)) {
+                                throw new ProfesionalNoEncontradoException("Profesional no encontrado");
+                            } else {
+                                trabajadores.remove(p);
+                                salarioTotal -= p.getSalarioBase();
+                            }
                         }
 
                         System.out.println("Quieres despedir otro? S/N");
@@ -84,41 +86,58 @@ public class GestorClub {
                             salida = false;
                         }
 
-                    }while (salida);
+                    } while (salida);
                     break;
                 case 4:
-                    double salarioBonus=0;
-                    for (Profesional p:trabajadores){
+                    double salarioBonus;
+                    double salarioEquipo = 0;
+                    for (Profesional p : trabajadores) {
                         System.out.println(p.getNombre());
                         System.out.println(p.getSalarioBase());
-                        salarioBonus=p.getSalarioBase();
-                        if (p.getClass()== Jugador.class){
+                        salarioBonus = p.getSalarioBase();
+
+                        if (p.getClass() == Jugador.class) {
 
                             System.out.println(((Jugador) p).getPosicion());
-                            salarioBonus=salarioBonus*0.10;
-                            System.out.println("Salario con plus "+p.plusSalarial(p.getSalarioBase(),salarioBonus));
-                            salarioBonus=0;
-                        }else {
-                            salarioBonus=0;
+                            salarioEquipo += p.getSalarioBase();
+                            salarioBonus = salarioBonus * 0.10;
+                            System.out.println("Salario con plus " + p.plusSalarial(p.getSalarioBase(), salarioBonus));
+                            salarioEquipo += salarioBonus;
+
+
+                        } else {
+                            salarioBonus = 0;
                             System.out.println(((Tecnico) p).getPuesto());
-                            salarioBonus=salarioBonus+200;
-                            System.out.println("Salario con plus "+p.plusSalarial(p.getSalarioBase(),salarioBonus));
-                            salarioBonus=0;
+                            salarioEquipo += p.getSalarioBase();
+                            salarioBonus = salarioBonus + 200;
+                            System.out.println("Salario con plus " + p.plusSalarial(p.getSalarioBase(), salarioBonus));
+                            salarioEquipo += salarioBonus;
+                            System.out.println("Salario gastado equipo " + salarioEquipo);
 
                         }
+                        if (salarioEquipo > PRESUPUESTO_MAXIMO) {
+                            throw new PresupuestoExcedidoException("presupuesto Excedido");
+                        }
                     }
+                    break;
+
+                case 5:
+                    System.err.println("saliendo");
+                    salida = false;
+                    break;
+                default:
+                    System.out.println("Opcion no valida prueba un numero que te pone en pantalla");
+                    break;
 
             }
-
-
-
-            }
-
-
 
 
         }
-    public static void menu(){
+
+
+    }
+
+    public static void menu() {
         System.out.println("1. Contratar Jugador");
         System.out.println("2. Contratar cuerpor tecnico");
         System.out.println("3. Despedir profesional");
