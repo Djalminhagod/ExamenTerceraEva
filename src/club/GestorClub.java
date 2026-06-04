@@ -40,7 +40,7 @@ public class GestorClub {
 
 
                         }while(salida);
-
+                    break;
                 case 2:
                     do {
 
@@ -63,7 +63,55 @@ public class GestorClub {
                         }
 
                     }while (salida);
+                    break;
+                case  3:
+                    do {
+                        System.out.println("A quien quieres despedir");
+                        String nombre = sc.next();
+                        for (Profesional p:trabajadores){
+
+                        if (!p.getNombre().equals(nombre)) {
+                            throw new ProfesionalNoEncontradoException("Profesional no encontrado");
+                        }else {
+                            trabajadores.remove(p);
+                            salarioTotal -= p.getSalarioBase();
+                        }
+                        }
+
+                        System.out.println("Quieres despedir otro? S/N");
+                        String salir = sc.next();
+                        if (salir.equals("N") || salir.equals("n")) {
+                            salida = false;
+                        }
+
+                    }while (salida);
+                    break;
+                case 4:
+                    double salarioBonus=0;
+                    for (Profesional p:trabajadores){
+                        System.out.println(p.getNombre());
+                        System.out.println(p.getSalarioBase());
+                        salarioBonus=p.getSalarioBase();
+                        if (p.getClass()== Jugador.class){
+
+                            System.out.println(((Jugador) p).getPosicion());
+                            salarioBonus=salarioBonus*0.10;
+                            System.out.println("Salario con plus "+p.plusSalarial(p.getSalarioBase(),salarioBonus));
+                            salarioBonus=0;
+                        }else {
+                            salarioBonus=0;
+                            System.out.println(((Tecnico) p).getPuesto());
+                            salarioBonus=salarioBonus+200;
+                            System.out.println("Salario con plus "+p.plusSalarial(p.getSalarioBase(),salarioBonus));
+                            salarioBonus=0;
+
+                        }
                     }
+
+            }
+
+
+
             }
 
 
